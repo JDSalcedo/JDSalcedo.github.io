@@ -90,19 +90,52 @@
                     var total_km = km_day * days
                     // Si la cantidad de km totales es mayor a la cantidad disponible.
                     var car_rates = []
-                    if (total_km >= destiny_km[destiny_id]['available']) {
+                    if (total_km > destiny_km[destiny_id]['available']) {
+                        rate_per_day_min = rate[car_id]['min']
+                        rate_per_day_15 = rate[car_id]['15']
+                        rate_per_day_21 = rate[car_id]['21']
                         if (days >= 21) {
-                            rate_per_day = rate[car_id]['21']
-                            car_rates.push({'rate_per_day': rate_per_day, 'total_rate_per_day': rate_per_day * days, 'days': days})
+                            days_min = 14
+                            days_15 = 6
+                            car_rates.push({
+                                'rate_per_day': [`[${days_min}: ${rate_per_day_min}]`, `[${days_15}: ${rate_per_day_15}]`, `[${days - (days_min + days_15)}: ${rate_per_day_21}]`],
+                                'total_rate_per_day': (rate_per_day_min * days_min) + (rate_per_day_15 * days_15) + (rate_per_day_21 * (days - (days_min + days_15))),
+                                'days': days
+                            })
                         } else if (days >= 15) {
-                            rate_per_day = rate[car_id]['15']
-                            car_rates.push({'rate_per_day': rate_per_day, 'total_rate_per_day': rate_per_day * days, 'days': days})
-                            car_rates.push({'rate_per_day': rate[car_id]['21'], 'total_rate_per_day': rate[car_id]['21'] * 21, 'days': 21})
+                            days_min = 14
+                            days_15 = 6
+                            days_21 = 1
+                            car_rates.push({
+                                'rate_per_day': [`[${days_min}: ${rate_per_day_min}]`, `[${days - days_min}: ${rate_per_day_15}]`], 
+                                'total_rate_per_day': (rate_per_day_min * days_min) + (rate_per_day_15 * (days - days_min)), 
+                                'days': days
+                            })
+                            car_rates.push({
+                                'rate_per_day': [`[${days_min}: ${rate_per_day_min}]`, `[${days_15}: ${rate_per_day_15}]`, `[${days_21}: ${rate_per_day_21}]`],
+                                'total_rate_per_day': (rate_per_day_min * days_min) + (rate_per_day_15 * days_15) + (rate_per_day_21 * days_21), 
+                                'days': 21
+                            })
                         } else {
-                            rate_per_day = rate[car_id]['min']
-                            car_rates.push({'rate_per_day': rate_per_day, 'total_rate_per_day': rate_per_day * days, 'days': days})
-                            car_rates.push({'rate_per_day': rate[car_id]['15'], 'total_rate_per_day': rate[car_id]['15'] * 15, 'days': 15})
-                            car_rates.push({'rate_per_day': rate[car_id]['21'], 'total_rate_per_day': rate[car_id]['21'] * 21, 'days': 21})
+                            days_min = 14
+                            days_15 = 6
+                            days_21 = 1
+
+                            car_rates.push({
+                                'rate_per_day': [`[${days}: ${rate_per_day_min}]`],
+                                'total_rate_per_day': rate_per_day_min * days, 
+                                'days': days
+                            })
+                            car_rates.push({
+                                'rate_per_day': [`[${days_min}: ${rate_per_day_min}]`, `[${15 - days_min}: ${rate_per_day_15}]`], 
+                                'total_rate_per_day': (rate_per_day_min * days_min) + (rate_per_day_15 * (15 - days_min)), 
+                                'days': 15
+                            })
+                            car_rates.push({
+                                'rate_per_day': [`[${days_min}: ${rate_per_day_min}]`, `[${days_15}: ${rate_per_day_15}]`, `[${days_21}: ${rate_per_day_21}]`], 
+                                'total_rate_per_day': (rate_per_day_min * days_min) + (rate_per_day_15 * days_15) + (rate_per_day_21 * days_21), 
+                                'days': 21
+                            })
                         }
                     } else {
                         additional = Math.ceil(((destiny_km[destiny_id]['available'] - total_km ) / 10) / 5) * 5
@@ -244,7 +277,7 @@
                 </div>
             </div>
             <div class="row" style="margin-top: 0.5rem;">
-                <div class="col-md-3"></div>
+                <div class="col-md-2"></div>
                 <div class="col-md">
                     <button type="button" id="bttn_calculate" class="btn btn-primary">Calcular Tarifa</button>
                 </div>
