@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous"/>
         <!-- Or for RTL support -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.rtl.min.css" />
 
@@ -18,9 +19,11 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
+        <!-- fontawesome -->
+        <script src="https://kit.fontawesome.com/e562cce8f6.js" crossorigin="anonymous"></script>
+
         <script>
             $(document).ready(function() {
-
                 var self = this
 
                 const factor = 2.5
@@ -67,6 +70,20 @@
                     '250': {'km': 710, 'available': 1775},
                     '260': {'km': 250, 'available': 250},
                 }
+                const features = {
+                    '10':  {'type': 'Sedán', 'year': 2016, 'engine': 'Mecánico', 'fuel': 'GLP y Gasolina', 'color': 'Negro', 'ac': true, 'blue': false, 'rev_camera': false, 'rows': 2, 'navigate': false},
+                    '20':  {'type': 'Sedán', 'year': 2016, 'engine': 'Mecánico', 'fuel': 'GNV y Gasolina', 'color': 'Negro', 'ac': false, 'blue': false, 'rev_camera': false, 'rows': 2, 'navigate': false},
+                    '30':  {'type': 'Sedán', 'year': 2017, 'engine': 'Mecánico', 'fuel': 'GLP y Gasolina', 'color': 'Rojo', 'ac': false, 'blue': false, 'rev_camera': false, 'rows': 2, 'navigate': false},
+                    '40':  {'type': 'Sedán', 'year': 2017, 'engine': 'Mecánico', 'fuel': 'GNV y Gasolina', 'color': 'Negro', 'ac': true, 'blue': false, 'rev_camera': false, 'rows': 2, 'navigate': false},
+                    '50':  {'type': 'Sedán', 'year': 2017, 'engine': 'Automático', 'fuel': 'Gasolina', 'color': 'Negro', 'ac': true, 'blue': true, 'rev_camera': true, 'rows': 2, 'navigate': false},
+                    '60':  {'type': 'Sedán', 'year': 2021, 'engine': 'Mecánico', 'fuel': 'GLP y Gasolina', 'color': 'Negro', 'ac': true, 'blue': true, 'rev_camera': false, 'rows': 2, 'navigate': false},
+                    '70':  {'type': 'Sedán', 'year': 2021, 'engine': 'Automático', 'fuel': 'GLP y Gasolina', 'color': 'Blanco', 'ac': true, 'blue': true, 'rev_camera': true, 'rows': 2, 'navigate': false},
+                    '80':  {'type': 'SUV', 'year': 2021, 'engine': 'Automático', 'fuel': 'GLP y Gasolina', 'color': 'Blanco', 'ac': true, 'blue': true, 'rev_camera': true, 'rows': 2, 'navigate': false},
+                    '90':  {'type': 'SUV', 'year': 2021, 'engine': 'Automático', 'fuel': 'Gasolina', 'color': 'Rojo', 'ac': true, 'blue': true, 'rev_camera': true, 'rows': 3, 'navigate': false},
+                    '100': {'type': 'SUV', 'year': 2018, 'engine': 'Automático', 'fuel': 'Gasolina', 'color': 'Gris', 'ac': true, 'blue': true, 'rev_camera': true, 'rows': 2, 'navigate': false},
+                    '110': {'type': 'SUV', 'year': 2020, 'engine': 'Automático', 'fuel': 'Gasolina', 'color': 'Rojo', 'ac': true, 'blue': true, 'rev_camera': true, 'rows': 2, 'navigate': true},
+                    '120': {'type': 'SUV', 'year': 2018, 'engine': 'Automático', 'fuel': 'Gasolina', 'color': 'Negro', 'ac': true, 'blue': true, 'rev_camera': true, 'rows': 2, 'navigate': false},
+                }
 
                 $('#car_id').select2({
                     theme: 'bootstrap-5',
@@ -84,66 +101,107 @@
                     width: '100%',
                 })
 
-                function total_rate_per_day(car_id, destiny_id, days) {
+                function total_rate_per_day(car_id, origin_id, destiny_id, days) {
                     var rate_per_day = 0.0
                     var additional = 0.0
                     var total_km = km_day * days
                     // Si la cantidad de km totales es mayor a la cantidad disponible.
                     var car_rates = []
-                    if (total_km > destiny_km[destiny_id]['available']) {
-                        rate_per_day_min = rate[car_id]['min']
-                        rate_per_day_15 = rate[car_id]['15']
-                        rate_per_day_21 = rate[car_id]['21']
-                        if (days >= 21) {
-                            days_min = 14
-                            days_15 = 6
-                            car_rates.push({
-                                'rate_per_day': [`[${days_min}: ${rate_per_day_min}]`, `[${days_15}: ${rate_per_day_15}]`, `[${days - (days_min + days_15)}: ${rate_per_day_21}]`],
-                                'total_rate_per_day': (rate_per_day_min * days_min) + (rate_per_day_15 * days_15) + (rate_per_day_21 * (days - (days_min + days_15))),
-                                'days': days
-                            })
-                        } else if (days >= 15) {
-                            days_min = 14
-                            days_15 = 6
-                            days_21 = 1
-                            car_rates.push({
-                                'rate_per_day': [`[${days_min}: ${rate_per_day_min}]`, `[${days - days_min}: ${rate_per_day_15}]`], 
-                                'total_rate_per_day': (rate_per_day_min * days_min) + (rate_per_day_15 * (days - days_min)), 
-                                'days': days
-                            })
-                            car_rates.push({
-                                'rate_per_day': [`[${days_min}: ${rate_per_day_min}]`, `[${days_15}: ${rate_per_day_15}]`, `[${days_21}: ${rate_per_day_21}]`],
-                                'total_rate_per_day': (rate_per_day_min * days_min) + (rate_per_day_15 * days_15) + (rate_per_day_21 * days_21), 
-                                'days': 21
-                            })
+                    if (origin_id != destiny_id) {
+                        if (total_km > destiny_km[destiny_id]['available']) {
+                            diff = total_km - destiny_km[destiny_id]['available']
+                            if (km_day > diff) {
+                                rate_per_day = rate[car_id]['base']
+                                car_rates.push({'rate_per_day': rate_per_day, 'total_rate_per_day': rate_per_day * days, 'days': days})
+                                return car_rates
+                            }
+                            rate_per_day_min = rate[car_id]['min']
+                            rate_per_day_15 = rate[car_id]['15']
+                            rate_per_day_21 = rate[car_id]['21']
+                            if (days >= 21) {
+                                days_min = 14
+                                days_15 = 6
+                                car_rates.push({
+                                    'rate_per_day': [`[${days_min}: ${rate_per_day_min}]`, `[${days_15}: ${rate_per_day_15}]`, `[${days - (days_min + days_15)}: ${rate_per_day_21}]`],
+                                    'total_rate_per_day': (rate_per_day_min * days_min) + (rate_per_day_15 * days_15) + (rate_per_day_21 * (days - (days_min + days_15))),
+                                    'days': days
+                                })
+                            } else if (days >= 15) {
+                                days_min = 14
+                                days_15 = 6
+                                days_21 = 1
+                                car_rates.push({
+                                    'rate_per_day': [`[${days_min}: ${rate_per_day_min}]`, `[${days - days_min}: ${rate_per_day_15}]`], 
+                                    'total_rate_per_day': (rate_per_day_min * days_min) + (rate_per_day_15 * (days - days_min)), 
+                                    'days': days
+                                })
+                                car_rates.push({
+                                    'rate_per_day': [`[${days_min}: ${rate_per_day_min}]`, `[${days_15}: ${rate_per_day_15}]`, `[${days_21}: ${rate_per_day_21}]`],
+                                    'total_rate_per_day': (rate_per_day_min * days_min) + (rate_per_day_15 * days_15) + (rate_per_day_21 * days_21), 
+                                    'days': 21
+                                })
+                            } else {
+                                days_min = 14
+                                days_15 = 6
+                                days_21 = 1
+                                car_rates.push({
+                                    'rate_per_day': [`[${days}: ${rate_per_day_min}]`],
+                                    'total_rate_per_day': rate_per_day_min * days, 
+                                    'days': days
+                                })
+                                car_rates.push({
+                                    'rate_per_day': [`[${days_min}: ${rate_per_day_min}]`, `[${15 - days_min}: ${rate_per_day_15}]`], 
+                                    'total_rate_per_day': (rate_per_day_min * days_min) + (rate_per_day_15 * (15 - days_min)), 
+                                    'days': 15
+                                })
+                                car_rates.push({
+                                    'rate_per_day': [`[${days_min}: ${rate_per_day_min}]`, `[${days_15}: ${rate_per_day_15}]`, `[${days_21}: ${rate_per_day_21}]`], 
+                                    'total_rate_per_day': (rate_per_day_min * days_min) + (rate_per_day_15 * days_15) + (rate_per_day_21 * days_21), 
+                                    'days': 21
+                                })
+                            }
                         } else {
-                            days_min = 14
-                            days_15 = 6
-                            days_21 = 1
-
-                            car_rates.push({
-                                'rate_per_day': [`[${days}: ${rate_per_day_min}]`],
-                                'total_rate_per_day': rate_per_day_min * days, 
-                                'days': days
-                            })
-                            car_rates.push({
-                                'rate_per_day': [`[${days_min}: ${rate_per_day_min}]`, `[${15 - days_min}: ${rate_per_day_15}]`], 
-                                'total_rate_per_day': (rate_per_day_min * days_min) + (rate_per_day_15 * (15 - days_min)), 
-                                'days': 15
-                            })
-                            car_rates.push({
-                                'rate_per_day': [`[${days_min}: ${rate_per_day_min}]`, `[${days_15}: ${rate_per_day_15}]`, `[${days_21}: ${rate_per_day_21}]`], 
-                                'total_rate_per_day': (rate_per_day_min * days_min) + (rate_per_day_15 * days_15) + (rate_per_day_21 * days_21), 
-                                'days': 21
-                            })
+                            additional = Math.ceil(((destiny_km[destiny_id]['available'] - total_km ) / 10) / 5) * 5
+                            rate_per_day = rate[car_id]['base'] + additional
+                            car_rates.push({'rate_per_day': rate_per_day, 'total_rate_per_day': rate_per_day * days, 'days': days})
                         }
                     } else {
-                        additional = Math.ceil(((destiny_km[destiny_id]['available'] - total_km ) / 10) / 5) * 5
-                        rate_per_day = rate[car_id]['base'] + additional
+                        rate_per_day = rate[car_id]['base']
+                        if (days > 6) {
+                            rate_per_day = rate[car_id]['min']
+                        } else if (days > 3) {
+                            rate_per_day = rate_per_day - 20
+                        } else if (days > 1) {
+                            rate_per_day = rate_per_day - 10
+                        }
                         car_rates.push({'rate_per_day': rate_per_day, 'total_rate_per_day': rate_per_day * days, 'days': days})
                     }
                     return car_rates
                 }
+
+                $('#car_id').on('change', (event) => {
+                    event.preventDefault()
+
+                    var $car_id = $(event.currentTarget)
+                    var $optionSelected = $car_id.children('option:selected')
+                    var car_id = $optionSelected.val()
+
+                    $features_id = $('#features_id')
+                    $features_id.empty()
+                    feature = features[car_id]
+                    $features_id.append(`
+                        <li class="list-group-item justify-content-between align-items-center"><div><i class="fa-solid fa-car"></i></div><small>${feature['type']}</small></li>
+                        <li class="list-group-item align-items-center"><div><i class="fa-solid fa-calendar-check"></i></div><small>${feature['year']}</small></li>
+                        <li class="list-group-item align-items-center"><div><i class="fa-solid fa-gear"></i></div><small>${feature['engine']}</small></li>
+                        <li class="list-group-item align-items-center"><div><i class="fa-solid fa-gas-pump"></i></div><small>${feature['fuel']}</small></li>
+                        <li class="list-group-item align-items-center"><div><i class="fa-solid fa-brush"></i></div><small>${feature['color']}</small></li>
+                        ${feature['ac'] ? '<li class="list-group-item align-items-center"><div><i class="fas fa-fan"></i></div><small>AC</li></small>' : ''}
+                        ${feature['blue'] ? '<li class="list-group-item align-items-center"><div><i class="fa fa-bluetooth" aria-hidden="true"></i></div><small>BT</li></small>' : ''}
+                        ${feature['rev_camera'] ? '<li class="list-group-item align-items-center"><div><i class="fas fa-camera"></i></div> Cámara Retroceso</li></small>' : ''}
+                        <li class="list-group-item align-items-center"><div><i class="fas fa-couch"></i></div><small>Filas Asientos: ${feature['rows']}</small></li>
+                        ${feature['navigate'] ? '<li class="list-group-item align-items-center"><div><i class="fas fa-map"></i></div><small>Navegación a bordo</li></small>' : ''}
+                    `)
+                })
 
                 $('#bttn_calculate').on('click', (event) => {
                     event.preventDefault()
@@ -162,13 +220,11 @@
                             var origin_id = $('#origin_id').val()
                             var destiny_id = $('#destiny_id').val()
 
-
-
                             var car_selected_text = $('#car_id option:selected').text()
                             var origin_selected_text = $('#origin_id option:selected').text()
                             var destiny_selected_text = $('#destiny_id option:selected').text()
                             
-                            var car_rates = total_rate_per_day(car_id, destiny_id, days)
+                            var car_rates = total_rate_per_day(car_id, origin_id, destiny_id, days)
 
                             $('#rtable > thead').children().remove()
                             $('#rtable > thead').append(`
@@ -233,6 +289,13 @@
                 <div class="col-md-2">
                     <label for="days" class="form-label">Días</label>
                     <input type="number" class="form-control" id="days" min="1" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    <label for="days" class="form-label">Características</label>
+                    <ul class="list-group list-group-horizontal" id="features_id" style="overflow-y: auto;"></ul>
                 </div>
             </div>
             <div class="row">
