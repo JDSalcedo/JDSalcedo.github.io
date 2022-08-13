@@ -107,7 +107,7 @@
                     var total_km = km_day * days
                     // Si la cantidad de km totales es mayor a la cantidad disponible.
                     var car_rates = []
-                    if (origin_id != destiny_id) {
+                    if (!['30', '170', '200', '210', '240', '260'].includes(destiny_id)) {
                         if (total_km > destiny_km[destiny_id]['available']) {
                             diff = total_km - destiny_km[destiny_id]['available']
                             if (km_day > diff) {
@@ -206,7 +206,6 @@
                 $('#bttn_calculate').on('click', (event) => {
                     event.preventDefault()
                     event.stopPropagation()
-                    console.log('click')
                     const forms = document.querySelectorAll('.needs-validation')
                     // Loop over them and prevent submission
                     Array.from(forms).forEach(form => {
@@ -267,7 +266,7 @@
         <div class="container">
         <form class="needs-validation">
             <div class="row">
-                <div class="col-md-2"></div>
+                <div class="col-md-4"></div>
                 <div class="col-md-4">
                     <label for="car_id" class="form-label">Auto</label>
                     <select name="car_id" id="car_id" class="form-control" required>
@@ -286,27 +285,22 @@
                         <option value="120">BMW X1 AT - BCH-410</option>
                     </select>
                 </div>
-                <div class="col-md-2">
-                    <label for="days" class="form-label">Días</label>
-                    <input type="number" class="form-control" id="days" min="1" required>
-                </div>
             </div>
-            <div class="row">
+            <div class="row" style="margin-top: 0.5rem;">
                 <div class="col-md-2"></div>
-                <div class="col-md-8">
-                    <label for="days" class="form-label">Características</label>
+                <div class="col-md-8 d-flex justify-content-center">
                     <ul class="list-group list-group-horizontal" id="features_id" style="overflow-y: auto;"></ul>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-2"></div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label for="destiny_id" class="form-label">Origen</label>
                     <select name="origin_id" id="origin_id" class="form-control">
                         <option value="260">Trujillo</option>
                     </select>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label for="destiny_id" class="form-label">Destino</label>
                     <select name="destiny_id" id="destiny_id" class="form-control" required>
                         <option></option>
@@ -338,10 +332,13 @@
                         <option value="260">Trujillo</option>
                     </select>
                 </div>
+                <div class="col-md-2">
+                    <label for="days" class="form-label">Días</label>
+                    <input type="number" class="form-control" id="days" min="1" required>
+                </div>
             </div>
             <div class="row" style="margin-top: 0.5rem;">
-                <div class="col-md-2"></div>
-                <div class="col-md">
+                <div class="d-flex justify-content-center">
                     <button type="button" id="bttn_calculate" class="btn btn-primary">Calcular Tarifa</button>
                 </div>
             </div>
@@ -357,6 +354,13 @@
                             <tr></tr>
                         </tbody>
                     </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <p>
+                        *Tarifas referenciales, a confirmar por un asesor.
+                    </p>
                 </div>
             </div>
           </form>
