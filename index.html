@@ -122,7 +122,9 @@
                 })
                 
                 var $rtable = $('#rtable')
-                $rtable.bootstrapTable()
+                $rtable.bootstrapTable({
+                    searchText: 'Buscar...'
+                })
                 $rtable.bootstrapTable('hideColumn', 'origin')
 
                 function total_rate_per_day(car_id, origin_id, destiny_id, days) {
