@@ -1,16 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
     <head>
         <title>Rent Car</title>
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
         <!-- Styles -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+        <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.20.2/dist/bootstrap-table.min.css">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous"/>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+
         <!-- Or for RTL support -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.rtl.min.css" />
 
@@ -18,11 +22,27 @@
         <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.slim.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        <script src="https://unpkg.com/bootstrap-table@1.20.2/dist/bootstrap-table.min.js"></script>
+        <script src="https://unpkg.com/bootstrap-table@1.20.2/dist/extensions/mobile/bootstrap-table-mobile.js"></script>
 
         <!-- fontawesome -->
         <script src="https://kit.fontawesome.com/e562cce8f6.js" crossorigin="anonymous"></script>
 
         <script>
+            function operateFormatter(value, row, index) {
+                return `
+                    <a class="whatsApp text-success" href="javascript:void(0)" title="WhatsApp">
+                        <i class="bi bi-whatsapp"></i>
+                    </a>
+                `
+            }
+
+            window.operateEvents = {
+                'click .whatsApp': function (e, value, row, index) {
+                    window.open(`https://wa.me/+51979915811?text=Buen dia, favor de confirmar esta cotizacion: Auto: ${row['car']}, Dias: ${row['days']}, Destino: ${row['destiny']}, Precio por Dia: ${row['pricexday']}, Total: ${row['price_total']}`)
+                }
+            }
+            
             $(document).ready(function() {
                 var self = this
 
@@ -100,6 +120,10 @@
                     placeholder: 'Selecciona un destino...',
                     width: '100%',
                 })
+                
+                var $rtable = $('#rtable')
+                $rtable.bootstrapTable()
+                $rtable.bootstrapTable('hideColumn', 'origin')
 
                 function total_rate_per_day(car_id, origin_id, destiny_id, days) {
                     var rate_per_day = 0.0
@@ -225,31 +249,23 @@
                             
                             var car_rates = total_rate_per_day(car_id, origin_id, destiny_id, days)
 
-                            $('#rtable > thead').children().remove()
-                            $('#rtable > thead').append(`
-                                <tr>
-                                    <th>Auto</th>
-                                    <th>Origen</th>
-                                    <th>Destino</th>
-                                    <th style="text-align: center;">Días</th>
-                                    <th style="text-align: right;">Precio por día</th>
-                                    <th style="text-align: right;">Tarifa total</th>
-                                </tr>
-                            `)
-                            $('#rtable > tbody').children().remove()
-                            var tbody = $('#rtable > tbody')
+                            // Eliminar datos de la tabla antes de guardar
+                            $rtable.bootstrapTable('removeAll')
+
+                            var rows = []
                             for (let car_rate of car_rates) {
-                                tbody.append(`
-                                    <tr>
-                                        <td>${car_selected_text}</th>
-                                        <td>${origin_selected_text}</th>
-                                        <td>${destiny_selected_text}</th>
-                                        <td style="text-align: center;">${car_rate['days']}</th>
-                                        <td style="text-align: right;">${car_rate['rate_per_day']}</th>
-                                        <td style="text-align: right;">${car_rate['total_rate_per_day']}</th>
-                                    </tr>
-                                `)
+                                rows.push({
+                                    car: car_selected_text,
+                                    origin: origin_selected_text,
+                                    destiny: destiny_selected_text,
+                                    days: car_rate['days'],
+                                    pricexday: car_rate['rate_per_day'],
+                                    price_total: car_rate['total_rate_per_day'],
+                                    operate: ''
+                                })
                             }
+
+                            $rtable.bootstrapTable('append', rows)
                             $('#results').show();
                         }
                         form.classList.add('was-validated')
@@ -346,21 +362,28 @@
                 <div class="col-md-1"></div>
                 <div class="col-md-10">
                     <h2>Resultados</h2>
-                    <table class="table" id="rtable">
-                        <thead>
-                            <tr></tr>
-                        </thead>
-                        <tbody>
-                            <tr></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12 text-center">
-                    <p>
-                        *Tarifas referenciales, a confirmar por un asesor.
-                    </p>
+                    <div class="table-responsive">
+                        <table class="table"
+                            id="rtable"
+                            data-show-columns="true"
+                            data-search="true"
+                            data-mobile-responsive="true"
+                            data-check-on-init="true"
+                            >
+                            <caption>*Tarifas referenciales, a confirmar por un asesor.</caption>
+                            <thead>
+                                <tr>
+                                    <th data-field="car">Auto</th>
+                                    <th data-field="origin">Origen</th>
+                                    <th data-field="destiny">Destino</th>
+                                    <th data-field="days" data-sortable="true" data-align="center">Días</th>
+                                    <th data-field="pricexday" data-sortable="true">Precio por día</th>
+                                    <th data-field="price_total" data-sortable="true" data-halign="right" data-align="right">Tarifa total</th>
+                                    <th data-field="operate" data-formatter="operateFormatter" data-events="operateEvents" data-halign="center" data-align="center">Whatsapp</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
                 </div>
             </div>
           </form>
