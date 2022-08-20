@@ -123,7 +123,13 @@
                 
                 var $rtable = $('#rtable')
                 $rtable.bootstrapTable({
-                    searchText: 'Buscar...'
+                    locale: 'es',
+                    formatSearch: function () {
+                        return 'Buscar...';
+                    },
+                    formatNoMatches: function () {
+                        return 'No se encontró ninguna coincidencia.'
+                    }
                 })
                 $rtable.bootstrapTable('hideColumn', 'origin')
 
