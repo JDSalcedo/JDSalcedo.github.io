@@ -32,79 +32,32 @@
             function operateFormatter(value, row, index) {
                 return `
                     <a class="whatsApp text-success" href="javascript:void(0)" title="WhatsApp">
-                        <i class="bi bi-whatsapp"></i>
+                        Enviar a Whatsapp <i class="bi bi-whatsapp"></i>
                     </a>
                 `
             }
-
             window.operateEvents = {
                 'click .whatsApp': function (e, value, row, index) {
-                    window.open(`https://wa.me/+51979915811?text=Buen dia, favor de confirmar esta cotizacion: Auto: ${row['car']}, Dias: ${row['days']}, Destino: ${row['destiny']}, Precio por Dia: ${row['pricexday']}, Total: ${row['price_total']}`)
+                    window.open(`https://wa.me/+51965065538?text=Buen día, favor de confirmar esta cotización: Auto: ${row['car']}, Días: ${row['days']}, Destino: ${row['destiny']}, Precio por Día: ${row['pricexday']}, Total: ${row['price_total']}`)
                 }
             }
-            
+            const features = {
+                '10':  {'type': 'Sedán', 'year': false, 'engine': 'Mecánico', 'fuel': 'Gasolina', 'color': 'Rojo', 'ac': false, 'blue': false, 'rev_camera': false, 'rows': 2, 'navigate': false},
+                '20':  {'type': 'Sedán', 'year': false, 'engine': 'Mecánico', 'fuel': 'GLP y Gasolina', 'color': 'Blanco', 'ac': false, 'blue': false, 'rev_camera': false, 'rows': 2, 'navigate': false},
+                '30':  {'type': 'SUV', 'year': false, 'engine': 'Automático', 'fuel': 'Gasolina', 'color': 'Negro', 'ac': false, 'blue': false, 'rev_camera': false, 'rows': 2, 'navigate': false},
+                '40':  {'type': 'SUV', 'year': false, 'engine': 'Mecánico', 'fuel': 'GLP y Gasolina', 'color': 'Plata', 'ac': false, 'blue': false, 'rev_camera': false, 'rows': 2, 'navigate': false},
+                '50':  {'type': 'PICK UP', 'year': false, 'engine': 'Mecánico', 'fuel': 'Petroleo', 'color': 'Azul', 'ac': false, 'blue': false, 'rev_camera': false, 'rows': 2, 'navigate': false}
+            }
+            const rate = {
+                '10':  {'base': 150, '3456': 145, '7': 135},
+                '20':  {'base': 155, '3456': 150, '7': 140},
+                '30':  {'base': 180, '3456': 175, '7': 165},
+                '40':  {'base': 190, '3456': 185, '7': 175},
+                '50':  {'base': 250, '3456': 245, '7': 230}
+            }
+
             $(document).ready(function() {
                 var self = this
-
-                const factor = 2.5
-                const km_day = 250
-                const rate = {
-                    '10':  {'base': 110, 'min': 100, '15': 90,  '21': 80},
-                    '20':  {'base': 120, 'min': 115, '15': 110, '21': 100},
-                    '30':  {'base': 120, 'min': 115, '15': 110, '21': 100},
-                    '40':  {'base': 130, 'min': 120, '15': 115, '21': 105},
-                    '50':  {'base': 140, 'min': 130, '15': 120, '21': 110},
-                    '60':  {'base': 140, 'min': 130, '15': 120, '21': 110},
-                    '70':  {'base': 150, 'min': 140, '15': 130, '21': 115},
-                    '80':  {'base': 230, 'min': 200, '15': 180, '21': 170},
-                    '90':  {'base': 250, 'min': 220, '15': 200, '21': 190},
-                    '100': {'base': 260, 'min': 230, '15': 210, '21': 200},
-                    '110': {'base': 260, 'min': 230, '15': 210, '21': 200},
-                    '120': {'base': 280, 'min': 250, '15': 230, '21': 220},
-                }
-                const destiny_km = {
-                    '10':  {'km': 225, 'available': 563},
-                    '20':  {'km': 290, 'available': 725},
-                    '30':  {'km': 50,  'available': 125},
-                    '40':  {'km': 105, 'available': 263},
-                    '50':  {'km': 130, 'available': 325},
-                    '60':  {'km': 205, 'available': 513},
-                    '70':  {'km': 130, 'available': 325},
-                    '80':  {'km': 200, 'available': 500},
-                    '90':  {'km': 380, 'available': 950},
-                    '100': {'km': 180, 'available': 450},
-                    '110': {'km': 340, 'available': 850},
-                    '120': {'km': 860, 'available': 2150},
-                    '130': {'km': 510, 'available': 1275},
-                    '140': {'km': 560, 'available': 1400},
-                    '150': {'km': 600, 'available': 1500},
-                    '160': {'km': 290, 'available': 725},
-                    '170': {'km': 75,  'available': 188},
-                    '180': {'km': 110, 'available': 275},
-                    '190': {'km': 423, 'available': 1058},
-                    '200': {'km': 70,  'available': 175},
-                    '210': {'km': 44,  'available': 110},
-                    '220': {'km': 630, 'available': 1575},
-                    '230': {'km': 130, 'available': 325},
-                    '240': {'km': 60,  'available': 150},
-                    '250': {'km': 710, 'available': 1775},
-                    '260': {'km': 250, 'available': 250},
-                }
-                const features = {
-                    '10':  {'type': 'Sedán', 'year': 2016, 'engine': 'Mecánico', 'fuel': 'GLP y Gasolina', 'color': 'Negro', 'ac': true, 'blue': false, 'rev_camera': false, 'rows': 2, 'navigate': false},
-                    '20':  {'type': 'Sedán', 'year': 2016, 'engine': 'Mecánico', 'fuel': 'GNV y Gasolina', 'color': 'Negro', 'ac': false, 'blue': false, 'rev_camera': false, 'rows': 2, 'navigate': false},
-                    '30':  {'type': 'Sedán', 'year': 2017, 'engine': 'Mecánico', 'fuel': 'GLP y Gasolina', 'color': 'Rojo', 'ac': false, 'blue': false, 'rev_camera': false, 'rows': 2, 'navigate': false},
-                    '40':  {'type': 'Sedán', 'year': 2017, 'engine': 'Mecánico', 'fuel': 'GNV y Gasolina', 'color': 'Negro', 'ac': true, 'blue': false, 'rev_camera': false, 'rows': 2, 'navigate': false},
-                    '50':  {'type': 'Sedán', 'year': 2017, 'engine': 'Automático', 'fuel': 'Gasolina', 'color': 'Negro', 'ac': true, 'blue': true, 'rev_camera': true, 'rows': 2, 'navigate': false},
-                    '60':  {'type': 'Sedán', 'year': 2021, 'engine': 'Mecánico', 'fuel': 'GLP y Gasolina', 'color': 'Negro', 'ac': true, 'blue': true, 'rev_camera': false, 'rows': 2, 'navigate': false},
-                    '70':  {'type': 'Sedán', 'year': 2021, 'engine': 'Automático', 'fuel': 'GLP y Gasolina', 'color': 'Blanco', 'ac': true, 'blue': true, 'rev_camera': true, 'rows': 2, 'navigate': false},
-                    '80':  {'type': 'SUV', 'year': 2021, 'engine': 'Automático', 'fuel': 'GLP y Gasolina', 'color': 'Blanco', 'ac': true, 'blue': true, 'rev_camera': true, 'rows': 2, 'navigate': false},
-                    '90':  {'type': 'SUV', 'year': 2021, 'engine': 'Automático', 'fuel': 'Gasolina', 'color': 'Rojo', 'ac': true, 'blue': true, 'rev_camera': true, 'rows': 3, 'navigate': false},
-                    '100': {'type': 'SUV', 'year': 2018, 'engine': 'Automático', 'fuel': 'Gasolina', 'color': 'Gris', 'ac': true, 'blue': true, 'rev_camera': true, 'rows': 2, 'navigate': false},
-                    '110': {'type': 'SUV', 'year': 2020, 'engine': 'Automático', 'fuel': 'Gasolina', 'color': 'Rojo', 'ac': true, 'blue': true, 'rev_camera': true, 'rows': 2, 'navigate': true},
-                    '120': {'type': 'SUV', 'year': 2018, 'engine': 'Automático', 'fuel': 'Gasolina', 'color': 'Negro', 'ac': true, 'blue': true, 'rev_camera': true, 'rows': 2, 'navigate': false},
-                }
-
                 $('#car_id').select2({
                     theme: 'bootstrap-5',
                     placeholder: 'Selecciona un auto...',
@@ -120,7 +73,6 @@
                     placeholder: 'Selecciona un destino...',
                     width: '100%',
                 })
-                
                 var $rtable = $('#rtable')
                 $rtable.bootstrapTable({
                     locale: 'es',
@@ -132,84 +84,6 @@
                     }
                 })
                 $rtable.bootstrapTable('hideColumn', 'origin')
-
-                function total_rate_per_day(car_id, origin_id, destiny_id, days) {
-                    var rate_per_day = 0.0
-                    var additional = 0.0
-                    var total_km = km_day * days
-                    // Si la cantidad de km totales es mayor a la cantidad disponible.
-                    var car_rates = []
-                    if (!['30', '170', '200', '210', '240', '260'].includes(destiny_id)) {
-                        if (total_km > destiny_km[destiny_id]['available']) {
-                            diff = total_km - destiny_km[destiny_id]['available']
-                            if (km_day > diff) {
-                                rate_per_day = rate[car_id]['base']
-                                car_rates.push({'rate_per_day': rate_per_day, 'total_rate_per_day': rate_per_day * days, 'days': days})
-                                return car_rates
-                            }
-                            rate_per_day_min = rate[car_id]['min']
-                            rate_per_day_15 = rate[car_id]['15']
-                            rate_per_day_21 = rate[car_id]['21']
-                            if (days >= 21) {
-                                days_min = 14
-                                days_15 = 6
-                                car_rates.push({
-                                    'rate_per_day': [`[${days_min}: ${rate_per_day_min}]`, `[${days_15}: ${rate_per_day_15}]`, `[${days - (days_min + days_15)}: ${rate_per_day_21}]`],
-                                    'total_rate_per_day': (rate_per_day_min * days_min) + (rate_per_day_15 * days_15) + (rate_per_day_21 * (days - (days_min + days_15))),
-                                    'days': days
-                                })
-                            } else if (days >= 15) {
-                                days_min = 14
-                                days_15 = 6
-                                days_21 = 1
-                                car_rates.push({
-                                    'rate_per_day': [`[${days_min}: ${rate_per_day_min}]`, `[${days - days_min}: ${rate_per_day_15}]`], 
-                                    'total_rate_per_day': (rate_per_day_min * days_min) + (rate_per_day_15 * (days - days_min)), 
-                                    'days': days
-                                })
-                                car_rates.push({
-                                    'rate_per_day': [`[${days_min}: ${rate_per_day_min}]`, `[${days_15}: ${rate_per_day_15}]`, `[${days_21}: ${rate_per_day_21}]`],
-                                    'total_rate_per_day': (rate_per_day_min * days_min) + (rate_per_day_15 * days_15) + (rate_per_day_21 * days_21), 
-                                    'days': 21
-                                })
-                            } else {
-                                days_min = 14
-                                days_15 = 6
-                                days_21 = 1
-                                car_rates.push({
-                                    'rate_per_day': [`[${days}: ${rate_per_day_min}]`],
-                                    'total_rate_per_day': rate_per_day_min * days, 
-                                    'days': days
-                                })
-                                car_rates.push({
-                                    'rate_per_day': [`[${days_min}: ${rate_per_day_min}]`, `[${15 - days_min}: ${rate_per_day_15}]`], 
-                                    'total_rate_per_day': (rate_per_day_min * days_min) + (rate_per_day_15 * (15 - days_min)), 
-                                    'days': 15
-                                })
-                                car_rates.push({
-                                    'rate_per_day': [`[${days_min}: ${rate_per_day_min}]`, `[${days_15}: ${rate_per_day_15}]`, `[${days_21}: ${rate_per_day_21}]`], 
-                                    'total_rate_per_day': (rate_per_day_min * days_min) + (rate_per_day_15 * days_15) + (rate_per_day_21 * days_21), 
-                                    'days': 21
-                                })
-                            }
-                        } else {
-                            additional = Math.ceil(((destiny_km[destiny_id]['available'] - total_km ) / 10) / 5) * 5
-                            rate_per_day = rate[car_id]['base'] + additional
-                            car_rates.push({'rate_per_day': rate_per_day, 'total_rate_per_day': rate_per_day * days, 'days': days})
-                        }
-                    } else {
-                        rate_per_day = rate[car_id]['base']
-                        if (days > 6) {
-                            rate_per_day = rate[car_id]['min']
-                        } else if (days > 3) {
-                            rate_per_day = rate_per_day - 20
-                        } else if (days > 1) {
-                            rate_per_day = rate_per_day - 10
-                        }
-                        car_rates.push({'rate_per_day': rate_per_day, 'total_rate_per_day': rate_per_day * days, 'days': days})
-                    }
-                    return car_rates
-                }
 
                 $('#car_id').on('change', (event) => {
                     event.preventDefault()
@@ -223,7 +97,7 @@
                     feature = features[car_id]
                     $features_id.append(`
                         <li class="list-group-item justify-content-between align-items-center"><div><i class="fa-solid fa-car"></i></div><small>${feature['type']}</small></li>
-                        <li class="list-group-item align-items-center"><div><i class="fa-solid fa-calendar-check"></i></div><small>${feature['year']}</small></li>
+                        ${feature['year'] ? "<li class='list-group-item align-items-center'><div><i class='fa-solid fa-calendar-check'></i></div><small>"+ feature['year']+"</small></li>" : ''}
                         <li class="list-group-item align-items-center"><div><i class="fa-solid fa-gear"></i></div><small>${feature['engine']}</small></li>
                         <li class="list-group-item align-items-center"><div><i class="fa-solid fa-gas-pump"></i></div><small>${feature['fuel']}</small></li>
                         <li class="list-group-item align-items-center"><div><i class="fa-solid fa-brush"></i></div><small>${feature['color']}</small></li>
@@ -234,6 +108,55 @@
                         ${feature['navigate'] ? '<li class="list-group-item align-items-center"><div><i class="fas fa-map"></i></div><small>Navegación a bordo</li></small>' : ''}
                     `)
                 })
+
+                function total_rate_per_day(car_id, origin_id, destiny_id, days) {
+                    var rate_per_day = 0.0
+                    var additional = 0.0
+                    // Si la cantidad de km totales es mayor a la cantidad disponible.
+                    var car_rates = []
+                    
+                    rate_per_day_base = rate[car_id]['base']
+                    rate_per_day_3456 = rate[car_id]['3456']
+                    rate_per_day_7 = rate[car_id]['7']
+                    if (days >= 7) {
+                        car_rates.push({
+                            'rate_per_day': `${days}: ${rate_per_day_7}`,
+                            'total_rate_per_day': rate_per_day_7 * days,
+                            'days': days
+                        })
+                    } else if (days >= 3) {
+                        days_7 = 7
+                        car_rates.push({
+                            'rate_per_day': `${days}: ${rate_per_day_3456}`, 
+                            'total_rate_per_day': rate_per_day_3456 * days, 
+                            'days': days
+                        })
+                        car_rates.push({
+                            'rate_per_day': `${days_7}: ${rate_per_day_7}`,
+                            'total_rate_per_day': rate_per_day_7 * days_7,
+                            'days': days_7
+                        })
+                    } else {
+                        days_7 = 7
+                        days_3456 = 3
+                        car_rates.push({
+                            'rate_per_day': `${days}: ${rate_per_day_base}`, 
+                            'total_rate_per_day': rate_per_day_base * days, 
+                            'days': days
+                        })
+                        car_rates.push({
+                            'rate_per_day': `${days_3456}: ${rate_per_day_3456}`,
+                            'total_rate_per_day': rate_per_day_3456 * days_3456,
+                            'days': days_3456
+                        })
+                        car_rates.push({
+                            'rate_per_day': `${days_7}: ${rate_per_day_7}`,
+                            'total_rate_per_day': rate_per_day_7 * days_7,
+                            'days': days_7
+                        })
+                    } 
+                    return car_rates
+                }
 
                 $('#bttn_calculate').on('click', (event) => {
                     event.preventDefault()
@@ -284,117 +207,95 @@
     </head>
     <body>
         <div class="jumbotron text-center">
-            <h1>Rent Car</h1>
-            <p>Cotiza tu mismo el alquiler del vehículo que más te guste</p>
+            <h1>CSERGE PERU RENT A CAR</h1>
+            <p>Alquiler de autos y camionetas full equipo Mecánicos y Automáticos</p>
         </div>
         <div class="container">
-        <form class="needs-validation">
-            <div class="row">
-                <div class="col-md-4"></div>
-                <div class="col-md-4">
-                    <label for="car_id" class="form-label">Auto</label>
-                    <select name="car_id" id="car_id" class="form-control" required>
-                        <option></option>
-                        <option value="10">Toyota Etios MT 1 - T5B-546</option>
-                        <option value="20">Toyota Yaris MT 1 - AUR-087</option>
-                        <option value="30">Toyota Yaris MT 2 - H2W-639</option>
-                        <option value="40">Toyota Yaris MT 3 - AFX-050</option>
-                        <option value="50">Toyota Yaris AT - T4B-394</option>
-                        <option value="60">Toyota Etios MT 2 - T5K-180</option>
-                        <option value="70">Hyundai Verna AT - T6C-452</option>
-                        <option value="80">Hyundai Creta AT - T6C-542</option>
-                        <option value="90">Toyota Rush AT - T6B-273</option>
-                        <option value="100">Toyota Rav4 AT - AZP-110</option>
-                        <option value="110">Mazda CX-3 AT - BKZ-556</option>
-                        <option value="120">BMW X1 AT - BCH-410</option>
-                    </select>
-                </div>
-            </div>
-            <div class="row" style="margin-top: 0.5rem;">
-                <div class="col-md-2"></div>
-                <div class="col-md-8 d-flex justify-content-center">
-                    <ul class="list-group list-group-horizontal" id="features_id" style="overflow-y: auto;"></ul>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-2"></div>
-                <div class="col-md-3">
-                    <label for="destiny_id" class="form-label">Origen</label>
-                    <select name="origin_id" id="origin_id" class="form-control">
-                        <option value="260">Trujillo</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label for="destiny_id" class="form-label">Destino</label>
-                    <select name="destiny_id" id="destiny_id" class="form-control" required>
-                        <option></option>
-                        <option value="10">Cajabamba</option>
-                        <option value="20">Cajamarca</option>
-                        <option value="30">Casa Grande</option>
-                        <option value="40">Cascas</option>
-                        <option value="50">Chepen</option>
-                        <option value="60">Chiclayo</option>
-                        <option value="70">Chimbote</option>
-                        <option value="80">Curgos</option>
-                        <option value="90">Cutervo</option>
-                        <option value="100">Huamachuco</option>
-                        <option value="110">Huaraz</option>
-                        <option value="120">Ica</option>
-                        <option value="130">Jaen</option>
-                        <option value="140">Lima</option>
-                        <option value="150">Mancora</option>
-                        <option value="160">Motupe</option>
-                        <option value="170">Otuzco</option>
-                        <option value="180">Pacasmayo</option>
-                        <option value="190">Piura ciudad</option>
-                        <option value="200">Puerto Malabrigo</option>
-                        <option value="210">Puerto Morin</option>
-                        <option value="220">Punta Sal</option>
-                        <option value="230">Quiruvilca</option>
-                        <option value="240">Sausal</option>
-                        <option value="250">Tumbes ciudad</option>
-                        <option value="260">Trujillo</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label for="days" class="form-label">Días</label>
-                    <input type="number" class="form-control" id="days" min="1" required>
-                </div>
-            </div>
-            <div class="row" style="margin-top: 0.5rem;">
-                <div class="d-flex justify-content-center">
-                    <button type="button" id="bttn_calculate" class="btn btn-primary">Calcular Tarifa</button>
-                </div>
-            </div>
-            <div class="row" id="results" style="display: none; margin-top: 0.5rem;">
-                <div class="col-md-1"></div>
-                <div class="col-md-10">
-                    <h2>Resultados</h2>
-                    <div class="table-responsive">
-                        <table class="table"
-                            id="rtable"
-                            data-show-columns="true"
-                            data-search="true"
-                            data-mobile-responsive="true"
-                            data-check-on-init="true"
-                            >
-                            <caption>*Tarifas referenciales, a confirmar por un asesor.</caption>
-                            <thead>
-                                <tr>
-                                    <th data-field="car">Auto</th>
-                                    <th data-field="origin">Origen</th>
-                                    <th data-field="destiny">Destino</th>
-                                    <th data-field="days" data-sortable="true" data-align="center">Días</th>
-                                    <th data-field="pricexday" data-sortable="true">Precio por día</th>
-                                    <th data-field="price_total" data-sortable="true" data-halign="right" data-align="right">Tarifa total</th>
-                                    <th data-field="operate" data-formatter="operateFormatter" data-events="operateEvents" data-halign="center" data-align="center">Whatsapp</th>
-                                </tr>
-                            </thead>
-                        </table>
+            <form class="needs-validation">
+                <div class="row">
+                    <div class="col-md-4"></div>
+                    <div class="col-md-4">
+                        <label for="car_id" class="form-label">Auto</label>
+                        <select name="car_id" id="car_id" class="form-control" required>
+                            <option></option>
+                            <option value="10">HYUNDAI ELANTRA</option>
+                            <option value="20">TOYOTA COROLLA</option>
+                            <option value="30">HONDA HRV</option>
+                            <option value="40">TOYOTA RAV4</option>
+                            <option value="50">TOYOTA HILUX</option>
+                        </select>
                     </div>
                 </div>
-            </div>
-          </form>
+                <div class="row" style="margin-top: 0.5rem;">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8 d-flex justify-content-center">
+                        <ul class="list-group list-group-horizontal" id="features_id" style="overflow-y: auto;"></ul>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-3">
+                        <label for="destiny_id" class="form-label">Origen</label>
+                        <select name="origin_id" id="origin_id" class="form-control">
+                            <option value="10">Piura</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="destiny_id" class="form-label">Destino</label>
+                        <select name="destiny_id" id="destiny_id" class="form-control" required>
+                            <option></option>
+                            <option value="10">Piura</option>
+                            <option value="20">Paita</option>
+                            <option value="30">Sullana</option>
+                            <option value="40">Talara</option>
+                            <option value="50">Mancora</option>
+                            <option value="60">Punta Sal</option>
+                            <option value="70">Zorritos</option>
+                            <option value="80">Tumbes</option>
+                            <option value="90">Chiclayo</option>
+                            <option value="100">Trujillo</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="days" class="form-label">Días</label>
+                        <input type="number" class="form-control" id="days" min="1" required>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 0.5rem;">
+                    <div class="d-flex justify-content-center">
+                        <button type="button" id="bttn_calculate" class="btn btn-success">Calcular Tarifa</button>
+                    </div>
+                </div>
+                <div class="row" id="results" style="display: none; margin-top: 0.5rem;">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-10">
+                        <h2>Resultados</h2>
+                        <div class="table-responsive">
+                            <table class="table"
+                                id="rtable"
+                                data-show-columns="true"
+                                data-search="true"
+                                data-mobile-responsive="true"
+                                data-check-on-init="true"
+                                >
+                                <caption>*Tarifas referenciales, a confirmar por un asesor comercial.<br/>*Garantia, a confirmar por un asesor comercial.</caption>
+                                <thead>
+                                    <tr>
+                                        <th data-field="car">Auto</th>
+                                        <th data-field="origin">Origen</th>
+                                        <th data-field="destiny">Destino</th>
+                                        <th data-field="days" data-sortable="true" data-align="center">Días</th>
+                                        <th data-field="pricexday" data-sortable="true">Precio por día</th>
+                                        <th data-field="price_total" data-sortable="true" data-halign="right" data-align="right">Tarifa total</th>
+                                        <th data-field="operate" data-formatter="operateFormatter" data-events="operateEvents" data-halign="center" data-align="center">Whatsapp</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
+
     </body>
 </html>
