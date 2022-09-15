@@ -39,7 +39,7 @@
 
             window.operateEvents = {
                 'click .whatsApp': function (e, value, row, index) {
-                    window.open(`https://wa.me/+51979915811?text=Buen dia, favor de confirmar esta cotizacion: Auto: ${row['car']}, Dias: ${row['days']}, Destino: ${row['destiny']}, Precio por Dia: ${row['pricexday']}, Total: ${row['price_total']}`)
+                    window.open(`https://wa.me/+51979915811?text=Buen dia, favor de confirmar esta cotización: Auto: ${row['car']}, Días: ${row['days']}, Destino: ${row['destiny']}, Distancia: ${row['km']}, Precio por Día: ${row['pricexday']}, Total: ${row['price_total']}`)
                 }
             }
             
@@ -48,9 +48,23 @@
 
                 const factor = 2.5
                 const km_day = 250
+                /*
+                    <option value="10">Toyota Etios MT 1 - T5B-546</option>
+                    <option value="20">Toyota Yaris MT 1 - AUR-087</option>
+                    <option value="30">Toyota Yaris MT 2 - H2W-639</option>
+                    <option value="40">Toyota Yaris MT 3 - AFX-050</option>
+                    <option value="50">Toyota Yaris AT - T4B-394</option>
+                    <option value="60">Toyota Etios MT 2 - T5K-180</option>
+                    <option value="70">Hyundai Verna AT - T6C-452</option>
+                    <option value="80">Hyundai Creta AT - T6C-542</option>
+                    <option value="90">Toyota Rush AT - T6B-273</option>
+                    <option value="100">Toyota Rav4 AT - AZP-110</option>
+                    <option value="110">Mazda CX-3 AT - BKZ-556</option>
+                    <option value="120">BMW X1 AT - BCH-410</option>
+                */
                 const rate = {
                     '10':  {'base': 110, 'min': 100, '15': 90,  '21': 80},
-                    '20':  {'base': 120, 'min': 115, '15': 110, '21': 100},
+                    '20':  {'base': 130, 'min': 115, '15': 110, '21': 100},
                     '30':  {'base': 120, 'min': 115, '15': 110, '21': 100},
                     '40':  {'base': 130, 'min': 120, '15': 115, '21': 105},
                     '50':  {'base': 140, 'min': 130, '15': 120, '21': 110},
@@ -60,7 +74,7 @@
                     '90':  {'base': 250, 'min': 220, '15': 200, '21': 190},
                     '100': {'base': 260, 'min': 230, '15': 210, '21': 200},
                     '110': {'base': 260, 'min': 230, '15': 210, '21': 200},
-                    '120': {'base': 280, 'min': 250, '15': 230, '21': 220},
+                    '120': {'base': 290, 'min': 250, '15': 230, '21': 220},
                 }
                 const destiny_km = {
                     '10':  {'km': 225, 'available': 563},
@@ -144,7 +158,7 @@
                             diff = total_km - destiny_km[destiny_id]['available']
                             if (km_day > diff) {
                                 rate_per_day = rate[car_id]['base']
-                                car_rates.push({'rate_per_day': rate_per_day, 'total_rate_per_day': rate_per_day * days, 'days': days})
+                                car_rates.push({'rate_per_day': `S/. ${rate_per_day}`, 'total_rate_per_day': `S/. ${rate_per_day * days}`, 'days': days})
                                 return car_rates
                             }
                             rate_per_day_min = rate[car_id]['min']
@@ -154,8 +168,8 @@
                                 days_min = 14
                                 days_15 = 6
                                 car_rates.push({
-                                    'rate_per_day': [`[${days_min}: ${rate_per_day_min}]`, `[${days_15}: ${rate_per_day_15}]`, `[${days - (days_min + days_15)}: ${rate_per_day_21}]`],
-                                    'total_rate_per_day': (rate_per_day_min * days_min) + (rate_per_day_15 * days_15) + (rate_per_day_21 * (days - (days_min + days_15))),
+                                    'rate_per_day': [`[${days_min}: S/. ${rate_per_day_min}]`, `[${days_15}: S/. ${rate_per_day_15}]`, `[${days - (days_min + days_15)}: S/. ${rate_per_day_21}]`],
+                                    'total_rate_per_day': `S/. ${(rate_per_day_min * days_min) + (rate_per_day_15 * days_15) + (rate_per_day_21 * (days - (days_min + days_15)))}`,
                                     'days': days
                                 })
                             } else if (days >= 15) {
@@ -163,13 +177,13 @@
                                 days_15 = 6
                                 days_21 = 1
                                 car_rates.push({
-                                    'rate_per_day': [`[${days_min}: ${rate_per_day_min}]`, `[${days - days_min}: ${rate_per_day_15}]`], 
-                                    'total_rate_per_day': (rate_per_day_min * days_min) + (rate_per_day_15 * (days - days_min)), 
+                                    'rate_per_day': [`[${days_min}: S/. ${rate_per_day_min}]`, `[${days - days_min}: S/. ${rate_per_day_15}]`], 
+                                    'total_rate_per_day': `S/. ${(rate_per_day_min * days_min) + (rate_per_day_15 * (days - days_min))}`,
                                     'days': days
                                 })
                                 car_rates.push({
-                                    'rate_per_day': [`[${days_min}: ${rate_per_day_min}]`, `[${days_15}: ${rate_per_day_15}]`, `[${days_21}: ${rate_per_day_21}]`],
-                                    'total_rate_per_day': (rate_per_day_min * days_min) + (rate_per_day_15 * days_15) + (rate_per_day_21 * days_21), 
+                                    'rate_per_day': [`[${days_min}: S/. ${rate_per_day_min}]`, `[${days_15}: S/. ${rate_per_day_15}]`, `[${days_21}: S/. ${rate_per_day_21}]`],
+                                    'total_rate_per_day': `S/. ${(rate_per_day_min * days_min) + (rate_per_day_15 * days_15) + (rate_per_day_21 * days_21)}`,
                                     'days': 21
                                 })
                             } else {
@@ -177,25 +191,25 @@
                                 days_15 = 6
                                 days_21 = 1
                                 car_rates.push({
-                                    'rate_per_day': [`[${days}: ${rate_per_day_min}]`],
-                                    'total_rate_per_day': rate_per_day_min * days, 
+                                    'rate_per_day': [`[${days}: S/. ${rate_per_day_min}]`],
+                                    'total_rate_per_day': `S/. ${rate_per_day_min * days}`, 
                                     'days': days
                                 })
                                 car_rates.push({
-                                    'rate_per_day': [`[${days_min}: ${rate_per_day_min}]`, `[${15 - days_min}: ${rate_per_day_15}]`], 
-                                    'total_rate_per_day': (rate_per_day_min * days_min) + (rate_per_day_15 * (15 - days_min)), 
+                                    'rate_per_day': [`[${days_min}: S/. ${rate_per_day_min}]`, `[${15 - days_min}: S/. ${rate_per_day_15}]`], 
+                                    'total_rate_per_day': `S/. ${(rate_per_day_min * days_min) + (rate_per_day_15 * (15 - days_min))}`, 
                                     'days': 15
                                 })
                                 car_rates.push({
-                                    'rate_per_day': [`[${days_min}: ${rate_per_day_min}]`, `[${days_15}: ${rate_per_day_15}]`, `[${days_21}: ${rate_per_day_21}]`], 
-                                    'total_rate_per_day': (rate_per_day_min * days_min) + (rate_per_day_15 * days_15) + (rate_per_day_21 * days_21), 
+                                    'rate_per_day': [`[${days_min}: S/. ${rate_per_day_min}]`, `[${days_15}: S/. ${rate_per_day_15}]`, `[${days_21}: S/. ${rate_per_day_21}]`], 
+                                    'total_rate_per_day': `S/. ${(rate_per_day_min * days_min) + (rate_per_day_15 * days_15) + (rate_per_day_21 * days_21)}`, 
                                     'days': 21
                                 })
                             }
                         } else {
                             additional = Math.ceil(((destiny_km[destiny_id]['available'] - total_km ) / 10) / 5) * 5
                             rate_per_day = rate[car_id]['base'] + additional
-                            car_rates.push({'rate_per_day': rate_per_day, 'total_rate_per_day': rate_per_day * days, 'days': days})
+                            car_rates.push({'rate_per_day': `S/. ${rate_per_day}`, 'total_rate_per_day': `S/. ${rate_per_day * days}`, 'days': days})
                         }
                     } else {
                         rate_per_day = rate[car_id]['base']
@@ -206,7 +220,7 @@
                         } else if (days > 1) {
                             rate_per_day = rate_per_day - 10
                         }
-                        car_rates.push({'rate_per_day': rate_per_day, 'total_rate_per_day': rate_per_day * days, 'days': days})
+                        car_rates.push({'rate_per_day': `S/. ${rate_per_day}`, 'total_rate_per_day': `S/. ${rate_per_day * days}`, 'days': days})
                     }
                     return car_rates
                 }
@@ -266,6 +280,7 @@
                                     car: car_selected_text,
                                     origin: origin_selected_text,
                                     destiny: destiny_selected_text,
+                                    km: `${destiny_km[destiny_id]['km']} km`,
                                     days: car_rate['days'],
                                     pricexday: car_rate['rate_per_day'],
                                     price_total: car_rate['total_rate_per_day'],
@@ -384,6 +399,7 @@
                                     <th data-field="car">Auto</th>
                                     <th data-field="origin">Origen</th>
                                     <th data-field="destiny">Destino</th>
+                                    <th data-field="km" data-sortable="true">Distancia</th>
                                     <th data-field="days" data-sortable="true" data-align="center">Días</th>
                                     <th data-field="pricexday" data-sortable="true">Precio por día</th>
                                     <th data-field="price_total" data-sortable="true" data-halign="right" data-align="right">Tarifa total</th>
