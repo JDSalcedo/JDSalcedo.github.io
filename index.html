@@ -295,9 +295,36 @@
                         form.classList.add('was-validated')
                     })
                 })
+
+                $('#switchCheck').on('change', (event) => {
+                    var element = document.body
+                    element.classList.toggle("dark-mode")
+                    if($('#switchCheck').is(':checked')) {
+                        $("#light_logo_id").hide()
+                        $("#dark_logo_id").show()
+                    } else {
+                        $("#dark_logo_id").hide()
+                        $("#light_logo_id").show()
+                    }
+                })
             })
         </script>
         <style>
+            body {
+                padding: 25px;
+                background-color: white;
+                color: black;
+            }
+            .dark-mode {
+                background-color: black;
+                color: white;
+            }
+            .switch-theme {
+                position: absolute;
+                top: 0;
+                right: 0;
+                padding: 10px;
+            }
             .label-bold {
                 font-weight: 600;
             }
@@ -317,7 +344,14 @@
     </head>
     <body>
         <div class="jumbotron text-center">
-            <img src="logo.png" class="logo" alt="Logo"/>
+            <div class="switch-theme">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="switchCheck">
+                    <label class="form-check-label label-bold" for="switchCheck">Dark</label>
+                </div>
+            </div>
+            <img id="light_logo_id" src="logo-light.png" class="logo" alt="Logo"/>
+            <img id="dark_logo_id" src="logo-dark.png" class="logo" style="display: none;" alt="Logo"/>
         </div>
         <div class="container">
         <form class="needs-validation">
@@ -402,7 +436,7 @@
                 <div class="col-md-1"></div>
                 <div class="col-md-10">
                     <h2>Resultados</h2>
-                    <div class="table-responsive">
+                    <div class="table-responsive" style="background-color: white;">
                         <table class="table"
                             id="rtable"
                             data-show-columns="true"
