@@ -298,6 +298,9 @@
             })
         </script>
         <style>
+            .label-bold {
+                font-weight: 600;
+            }
             .logo {
                 margin-top: 20px;
                 margin-bottom: 20px;
@@ -321,7 +324,7 @@
             <div class="row">
                 <div class="col-md-4"></div>
                 <div class="col-md-4">
-                    <label for="car_id" class="form-label">Auto</label>
+                    <label for="car_id" class="form-label label-bold">Auto</label>
                     <select name="car_id" id="car_id" class="form-control" required>
                         <option></option>
                         <option value="10">Toyota Etios MT 1 - T5B-546</option>
@@ -348,13 +351,13 @@
             <div class="row">
                 <div class="col-md-2"></div>
                 <div class="col-md-3">
-                    <label for="destiny_id" class="form-label">Origen</label>
+                    <label for="destiny_id" class="form-label label-bold">Origen</label>
                     <select name="origin_id" id="origin_id" class="form-control">
                         <option value="260">Trujillo</option>
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <label for="destiny_id" class="form-label">Destino</label>
+                    <label for="destiny_id" class="form-label label-bold">Destino</label>
                     <select name="destiny_id" id="destiny_id" class="form-control" required>
                         <option></option>
                         <option value="10">Cajabamba</option>
@@ -386,7 +389,7 @@
                     </select>
                 </div>
                 <div class="col-md-2">
-                    <label for="days" class="form-label">Días</label>
+                    <label for="days" class="form-label label-bold">Días</label>
                     <input type="number" class="form-control" id="days" min="1" required>
                 </div>
             </div>
